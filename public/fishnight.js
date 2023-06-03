@@ -19,6 +19,11 @@ function init() {
   controls.minDistance = 500;
   controls.maxDistance = 1500;
 
+  //Texture loaders
+  const textureLoader = new THREE.TextureLoader();
+  const moonTexture = textureLoader.load("img/moontexture.jpg");
+
+  //Scene background
   let materialArray = [];
   let texture_ft = new THREE.TextureLoader().load("img/corona_ft.png");
   let texture_bk = new THREE.TextureLoader().load("img/corona_bk.png");
@@ -39,13 +44,25 @@ function init() {
   let skybox = new THREE.Mesh(skyboxGeo, materialArray);
   scene.add(skybox);
   animate();
-}
-function render() {
-  renderer.render(scene, camera);
+
+  //la luna
+  const moonGeom = new THREE.SphereGeometry(80, 100, 100);
+  const moonMat = new THREE.MeshBasicMaterial({map: moonTexture});
+  const moon = new THREE.Mesh(moonGeom, moonMat);
+  moon.position.set(0, 600, 0)
+  moon.rotation.y += 0.01;
+  scene.add(moon);
+  
+
 }
 
 function animate() {
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }
+
+function render() {
+  renderer.render(scene, camera);
+}
+
 init();
