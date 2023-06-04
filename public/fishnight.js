@@ -1,16 +1,18 @@
 import * as THREE from 'three';
 import { OrbitControls } from './jsm/controls/OrbitControls.js'
 
-let scene, camera, renderer;
-function init() {
+let scene, camera, renderer, moon;
+
+init();
+animate();
+
+function init(){
+
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(
-    55,
-    window.innerWidth / window.innerHeight,
-    45,
-    30000
-  );
+  camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight,45,30000);
   camera.position.set(-900, -200, -900);
+
+
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
@@ -43,26 +45,24 @@ function init() {
   let skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
   let skybox = new THREE.Mesh(skyboxGeo, materialArray);
   scene.add(skybox);
-  animate();
+
 
   //la luna
-  const moonGeom = new THREE.SphereGeometry(80, 100, 100);
+  const moonGeom = new THREE.SphereGeometry(90, 1000, 1000);
   const moonMat = new THREE.MeshBasicMaterial({map: moonTexture});
-  const moon = new THREE.Mesh(moonGeom, moonMat);
-  moon.position.set(0, 600, 0)
-  moon.rotation.y += 0.01;
+  moon = new THREE.Mesh(moonGeom, moonMat);
+  moon.position.set(20, 600, 20);
   scene.add(moon);
-  
-
 }
 
-function animate() {
-  renderer.render(scene, camera);
+function animate(){
   requestAnimationFrame(animate);
+  moon.rotation.y += 0.005;
+
+  render();
 }
 
-function render() {
+function render(){
   renderer.render(scene, camera);
-}
 
-init();
+}
