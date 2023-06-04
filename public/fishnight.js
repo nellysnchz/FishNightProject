@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from './jsm/controls/OrbitControls.js'
+import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
 
 let scene, camera, renderer, moon;
 
@@ -9,9 +10,12 @@ animate();
 function init(){
 
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight,45,30000);
-  camera.position.set(-900, -200, -900);
 
+  //camara
+  camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight,0.1,10000);
+  camera.position.set(0, 50, 2000);
+  camera.lookAt(scene.position);
+  scene.add(camera);
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -19,12 +23,12 @@ function init(){
   let controls = new OrbitControls(camera, renderer.domElement);
   controls.addEventListener("change", render);
   controls.minDistance = 500;
-  controls.maxDistance = 1500;
+  controls.maxDistance = 2000;
 
   //Texture loaders
   const textureLoader = new THREE.TextureLoader();
   const moonTexture = textureLoader.load("img/moontexture.jpg");
-  const planeTexture = textureLoader.load("img/planetexture.png");
+  const planeTexture = textureLoader.load("img/mountains_baseColor.jpeg");
 
   //Scene background
   let materialArray = [];
@@ -47,12 +51,17 @@ function init(){
   let skybox = new THREE.Mesh(skyboxGeo, materialArray);
   scene.add(skybox);
 
+  //luces
+  const directionaLight = new THREE.DirectionalLight(0xffffff, 1);
+  directionaLight.position.set(0, 1, 0);
+  directionaLight.castShadow = true;
+  scene.add(directionaLight);
 
   //la luna
-  const moonGeom = new THREE.SphereGeometry(90, 1000, 1000);
+  const moonGeom = new THREE.SphereGeometry(100, 1000, 1000);
   const moonMat = new THREE.MeshBasicMaterial({map: moonTexture});
   moon = new THREE.Mesh(moonGeom, moonMat);
-  moon.position.set(20, 600, 20);
+  moon.position.set(20, 800, -800);
   scene.add(moon);
 
   //el plano
@@ -63,6 +72,15 @@ function init(){
   plane.position.set(0, -500, 0);
   plane.rotation.x = - Math.PI / 2;
   scene.add(plane);
+
+  //GLTF loader
+  const glftLoaderMountain = new GLTFLoader();
+  glftLoaderMountain.load("models/mountains.glb", function(gltfScene){
+    gltfScene.scene.rotation.y = - Math.PI / 2;
+    gltfScene.scene.scale.set(100, 100, 100);
+    gltfScene.scene.position.set(-500, -500, -5500);
+    scene.add(gltfScene.scene);
+  });
 }
 
 function animate(){
