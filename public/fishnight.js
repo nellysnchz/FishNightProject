@@ -24,6 +24,7 @@ function init(){
   //Texture loaders
   const textureLoader = new THREE.TextureLoader();
   const moonTexture = textureLoader.load("img/moontexture.jpg");
+  const planeTexture = textureLoader.load("img/planetexture.png");
 
   //Scene background
   let materialArray = [];
@@ -53,6 +54,15 @@ function init(){
   moon = new THREE.Mesh(moonGeom, moonMat);
   moon.position.set(20, 600, 20);
   scene.add(moon);
+
+  //el plano
+  const planeGeometry = new THREE.PlaneGeometry(10000, 10000);
+  const planeMaterial = new THREE.MeshBasicMaterial({map: planeTexture, side: THREE.DoubleSide});
+  const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+  plane.position.y = - 33;
+  plane.position.set(0, -500, 0);
+  plane.rotation.x = - Math.PI / 2;
+  scene.add(plane);
 }
 
 function animate(){
