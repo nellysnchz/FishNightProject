@@ -15,6 +15,8 @@ function init(){
   camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight,0.1,10000);
   camera.position.set(0, 50, 2000);
   camera.lookAt(scene.position);
+  /*const helper = new THREE.CameraHelper(camera);
+  scene.add(helper);*/
   scene.add(camera);
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -74,14 +76,30 @@ function init(){
   scene.add(plane);
 
   //GLTF loader
-  const glftLoaderMountain = new GLTFLoader();
-  glftLoaderMountain.load("models/mountains.glb", function(gltfScene){
+  const loader = new GLTFLoader();
+  loader.load("models/mountains.glb", function(gltfScene){
     gltfScene.scene.rotation.y = - Math.PI / 2;
     gltfScene.scene.scale.set(100, 100, 100);
-    gltfScene.scene.position.set(-500, -500, -5500);
+    gltfScene.scene.position.set(-500, -500, -5000);
     scene.add(gltfScene.scene);
   });
+
+  loader.load("models/mountains.glb", function(gltfScene){
+    gltfScene.scene.rotation.y = - Math.PI / 2;
+    gltfScene.scene.scale.set(100, 100, 100);
+    gltfScene.scene.position.set(-3000, -500, -5000);
+    scene.add(gltfScene.scene);
+  });
+
+  loader.load("models/mountains.glb", function(gltfScene){
+    gltfScene.scene.rotation.y = - Math.PI / 2;
+    gltfScene.scene.scale.set(100, 100, 100);
+    gltfScene.scene.position.set(3000, -500, -5000);
+    scene.add(gltfScene.scene);
+  });
+  
 }
+
 
 function animate(){
   requestAnimationFrame(animate);
@@ -91,6 +109,5 @@ function animate(){
 }
 
 function render(){
-  renderer.render(scene, camera);
-
+  renderer.render(scene, camera); 
 }
