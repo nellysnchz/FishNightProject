@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from './jsm/controls/OrbitControls.js'
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
 
-let scene, camera, renderer, moon;
+let scene, camera, renderer, moon, controls;
 
 init();
 animate();
@@ -13,7 +13,7 @@ function init(){
 
   //camara
   camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight,0.1,10000);
-  camera.position.set(0, 50, 2000);
+  camera.position.set(0, 50, 2500);
   camera.lookAt(scene.position);
   /*const helper = new THREE.CameraHelper(camera);
   scene.add(helper);*/
@@ -22,6 +22,11 @@ function init(){
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
+  
+  /*const controls = new OrbitControls(camera, renderer.domElement)
+  controls.noPan = true
+  controls.noZoom = true*/
+
   let controls = new OrbitControls(camera, renderer.domElement);
   controls.addEventListener("change", render);
   controls.minDistance = 500;
@@ -59,18 +64,20 @@ function init(){
   directionaLight.castShadow = true;
   scene.add(directionaLight);
 
+  
+
   //la luna
-  const moonGeom = new THREE.SphereGeometry(100, 1000, 1000);
+  const moonGeom = new THREE.SphereGeometry(500, 1000, 1000);
   const moonMat = new THREE.MeshBasicMaterial({map: moonTexture});
   moon = new THREE.Mesh(moonGeom, moonMat);
-  moon.position.set(20, 800, -800);
+  moon.position.set(20, 2500, -5000);
   scene.add(moon);
 
   //el plano
   const planeGeometry = new THREE.PlaneGeometry(10000, 10000);
-  const planeMaterial = new THREE.MeshBasicMaterial({map: planeTexture, side: THREE.DoubleSide});
+  const planeMaterial = new THREE.MeshBasicMaterial({map: planeTexture});
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  plane.position.y = - 33;
+  //plane.position.y = - 33;
   plane.position.set(0, -500, 0);
   plane.rotation.x = - Math.PI / 2;
   scene.add(plane);
@@ -79,27 +86,57 @@ function init(){
   const loader = new GLTFLoader();
   loader.load("models/mountains.glb", function(gltfScene){
     gltfScene.scene.rotation.y = - Math.PI / 2;
-    gltfScene.scene.scale.set(100, 100, 100);
+    gltfScene.scene.scale.set(100, 300, 100);
     gltfScene.scene.position.set(-500, -500, -5000);
     scene.add(gltfScene.scene);
   });
 
   loader.load("models/mountains.glb", function(gltfScene){
     gltfScene.scene.rotation.y = - Math.PI / 2;
-    gltfScene.scene.scale.set(100, 100, 100);
+    gltfScene.scene.scale.set(100, 200, 100);
     gltfScene.scene.position.set(-3000, -500, -5000);
     scene.add(gltfScene.scene);
   });
 
   loader.load("models/mountains.glb", function(gltfScene){
     gltfScene.scene.rotation.y = - Math.PI / 2;
-    gltfScene.scene.scale.set(100, 100, 100);
+    gltfScene.scene.scale.set(100, 200, 100);
     gltfScene.scene.position.set(3000, -500, -5000);
     scene.add(gltfScene.scene);
   });
-  
+
+  loader.load("models/old_rusty_car.glb", function(gltfScene){
+    gltfScene.scene.rotation.y = -25;
+    gltfScene.scene.scale.set(0.5, 0.5, 0.5);
+    gltfScene.scene.position.set(0, -500, 500);
+    scene.add(gltfScene.scene);
+  });
+
+  loader.load("models/electricity_pole.glb", function(gltfScene){
+    gltfScene.scene.rotation.y = - Math.PI / 2;
+    gltfScene.scene.scale.set(250, 250, 250);
+    gltfScene.scene.position.set(1000, -500, 1000);
+    scene.add(gltfScene.scene);
+  });
+
 }
 
+/*window.addEventListener(
+  'resize',
+  () => {
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+      // composer.setSize( window.innerWidth, window.innerHeight )
+      halfWidth = window.innerWidth / 2;
+      halfHeight = window.innerHeight / 2;
+      composerScene.setSize( halfWidth * 2, halfHeight * 2 );
+      composer1.setSize( halfWidth, halfHeight );
+      renderScene.uniforms[ 'tDiffuse' ].value = composerScene.renderTarget2.texture;
+      render()
+  },
+  false
+)*/
 
 function animate(){
   requestAnimationFrame(animate);
