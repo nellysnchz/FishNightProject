@@ -59,10 +59,10 @@ function init(){
   scene.add(skybox);
 
   //luces
-  const directionaLight = new THREE.DirectionalLight(0xffffff, 1);
+  /*const directionaLight = new THREE.DirectionalLight(0xffffff, 1);
   directionaLight.position.set(0, 1, 0);
   directionaLight.castShadow = true;
-  scene.add(directionaLight);
+  scene.add(directionaLight);*/
 
   
 
@@ -75,7 +75,7 @@ function init(){
 
   //el plano
   const planeGeometry = new THREE.PlaneGeometry(10000, 10000);
-  const planeMaterial = new THREE.MeshBasicMaterial({map: planeTexture});
+  const planeMaterial = new THREE.MeshLambertMaterial({map: planeTexture});
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
   //plane.position.y = - 33;
   plane.position.set(0, -500, 0);
@@ -118,6 +118,49 @@ function init(){
     gltfScene.scene.position.set(1000, -500, 1000);
     scene.add(gltfScene.scene);
   });
+  //pointlight para carro
+  const light = new THREE.PointLight("#E97451", 5, 700)
+  light.position.set(0,-0.10, 500)
+  light.castShadow = true
+  light.shadow.camera.near = 500 // default
+  light.shadow.camera.far = 500 // default
+  scene.add( light );
+
+  const sphereSize = 500;
+  const pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
+  scene.add( pointLightHelper );
+    //spotlight para iluminar todo el plano
+  
+    const spotLight_plano = new THREE.SpotLight( "#49345c" );
+    spotLight_plano.position.set( 0,100000,0);
+    spotLight_plano.intensity = 0.5;
+    spotLight_plano.castShadow = true;
+    spotLight_plano.shadow.mapSize.width = 1024;
+    spotLight_plano.shadow.mapSize.height = 1024;
+  
+    scene.add( spotLight_plano );
+  
+    const spotLightHelper_plano= new THREE.SpotLightHelper( spotLight_plano);
+    scene.add( spotLightHelper_plano);
+
+   //spotlight para montañas
+
+
+   const spotLight_mountains = new THREE.SpotLight( "#7b6fd2" );
+   spotLight_mountains.position.set( -2000,-500,5000);
+  
+   spotLight_mountains.intensity = 0.5;
+   spotLight_mountains.castShadow = true;
+   spotLight_mountains.shadow.mapSize.width = 10;
+   spotLight_mountains.shadow.mapSize.height = 10;
+ 
+   scene.add( spotLight_mountains );
+ 
+   const spotLightHelper_mountains= new THREE.SpotLightHelper( spotLight_mountains );
+   
+   spotLightHelper_mountains.position.set(10,10,10)
+  
+   scene.add( spotLightHelper_mountains );
 
 }
 
