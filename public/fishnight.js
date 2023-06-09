@@ -31,6 +31,26 @@ function init(){
 
   let controls = new OrbitControls(camera, renderer.domElement);
   controls.addEventListener("change", render);
+
+  var smokeTexture = new THREE.TextureLoader().load('img/smoke.png');
+  var smokeGeometry = new THREE.PlaneGeometry(300,1500);
+  var smokeMaterial = new THREE.MeshLambertMaterial({ map: smokeTexture, opacity: 0.3, transparent: true});
+
+  var smokeParticles;
+  smokeParticles = [];
+
+  for (var i = 0; i < 5; i++)
+{    
+    var smoke_element = new THREE.Mesh(smokeGeometry,smokeMaterial);
+    smoke_element.scale.set(2, 2, 2);
+    smoke_element.position.set( Math.random()* 100, Math.random()*500, Math.random()*100);
+    smoke_element.rotation.z = Math.random() * 360
+            
+    scene.add(smoke_element);
+    smokeParticles.push(smoke_element);
+}
+
+  
   
    //Texture loaders
   const textureLoader = new THREE.TextureLoader();
@@ -138,9 +158,7 @@ function init(){
   light.shadow.camera.far = 500 // default
   scene.add( light );
 
-  const sphereSize = 500;
-  const pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
-  scene.add( pointLightHelper );
+ 
     //spotlight para iluminar todo el plano
   
     const spotLight_plano = new THREE.SpotLight( "#49345c" );
@@ -156,21 +174,30 @@ function init(){
     scene.add( spotLightHelper_plano);
 
     //niebla
-    scene.fog = new THREE.Fog( 0x2f3640, 0, 12000 );
+    scene.fog = new THREE.Fog( 0x2f3640, 5, 12000 );
 
-    //pointlight para niebla
-  /*const niebla_light = new THREE.PointLight("#05057C", 5, 700)
-  niebla_light.position.set(-500,-0.10, -1000)
-  niebla_light.intensity = 50
-  niebla_light.rotateZ = Math.PI / 2
-  niebla_light.castShadow = true
-  niebla_light.shadow.camera.near = 500 // default
-  niebla_light.shadow.camera.far = 500 // default
-  scene.add( niebla_light );
+    //pointlight para poste
+  const poste_light = new THREE.PointLight("#047F71", 5, 700)
+  poste_light.position.set(950,70, -1500)
+  poste_light.intensity = 6
+  poste_light.rotateY = -Math.PI / 2
+  poste_light.castShadow = true
+  poste_light.shadow.camera.near = 500 // default
+  poste_light.shadow.camera.far = 500 // default
+  scene.add( poste_light );
 
-  const sphereSize2 = 500;
-  const pointLightHelper2 = new THREE.PointLightHelper( niebla_light, sphereSize2 );
-  scene.add( pointLightHelper2 );*/
+
+
+      //pointlight para poste 2
+  const poste_light2 = new THREE.PointLight("#047F71", 5, 700)
+  poste_light2.position.set(950,70, 950)
+  poste_light2.intensity = 6
+  poste_light2.rotateY = -Math.PI / 2
+  poste_light2.castShadow = true
+  poste_light2.shadow.camera.near = 500 // default
+  poste_light2.shadow.camera.far = 500 // default
+  scene.add( poste_light2 );
+  
     
   
 
