@@ -4,6 +4,7 @@ import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
 
 
 
+
 let scene, camera, renderer, moon, controls, mixer, mosasa;
 
 
@@ -215,12 +216,7 @@ function init(){
  
    scene.add( spotLight_mountains );
  
-   const spotLightHelper_mountains= new THREE.SpotLightHelper( spotLight_mountains );
-   
-   spotLightHelper_mountains.position.set(10,10,10)
   
-   scene.add( spotLightHelper_mountains );
-
 }
 
 /*window.addEventListener(
