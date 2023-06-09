@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from './jsm/controls/OrbitControls.js'
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
 
-let scene, camera, renderer, moon, controls, mixer, mosasa;
+let scene, camera, renderer, moon, controls, mixer, mosasa, seaturtle, jellyfish;
 
 init();
 animate();
@@ -24,14 +24,14 @@ function init(){
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
   
-  /*const controls = new OrbitControls(camera, renderer.domElement)
+  const controls = new OrbitControls(camera, renderer.domElement)
   controls.noPan = true
-  controls.noZoom = true*/
+  controls.noZoom = true
 
-  let controls = new OrbitControls(camera, renderer.domElement);
+  /*controls = new OrbitControls(camera, renderer.domElement);
   controls.addEventListener("change", render);
   controls.minDistance = 500;
-  controls.maxDistance = 2000;
+  controls.maxDistance = 2000;*/
 
   //Texture loaders
   const textureLoader = new THREE.TextureLoader();
@@ -86,7 +86,8 @@ function init(){
   //GLTF loader
   const loader = new GLTFLoader();
   loader.load("models/mountains.glb", function(gltfScene){
-    gltfScene.scene.rotation.y = - Math.PI / 2;
+    //gltfScene.scene.rotation.x = Math.PI * 2;
+    gltfScene.scene.rotation.y = Math.PI * 2;
     gltfScene.scene.scale.set(100, 300, 100);
     gltfScene.scene.position.set(-500, -500, -5000);
     scene.add(gltfScene.scene);
@@ -116,14 +117,38 @@ function init(){
   loader.load("models/electricity_pole.glb", function(gltfScene){
     gltfScene.scene.rotation.y = - Math.PI / 2;
     gltfScene.scene.scale.set(250, 250, 250);
-    gltfScene.scene.position.set(1000, -500, 1000);
+    gltfScene.scene.position.set(1000, -800, 1000);
     scene.add(gltfScene.scene);
   });
 
   loader.load("models/mosasa.glb", function(gltfScene){
     mosasa = gltfScene.scene;
-    gltfScene.scene.scale.set(50, 50, 50);
+    gltfScene.scene.scale.set(80, 80, 80);
     gltfScene.scene.position.set(100, 400, 500);
+    const animations = gltfScene.animations;
+    mixer = new THREE.AnimationMixer(gltfScene.scene);
+    const action = mixer.clipAction(animations[0]);
+    action.play();
+    scene.add(gltfScene.scene);
+  });
+
+  loader.load("models/seaturtle.glb", function(gltfScene){
+    seaturtle = gltfScene.scene;
+    gltfScene.scene.scale.set(800, 800, 800);
+    gltfScene.scene.position.set(-1000, 100, 500);
+    const animations = gltfScene.animations;
+    mixer = new THREE.AnimationMixer(gltfScene.scene);
+    const action = mixer.clipAction(animations[0]);
+    action.play();
+    scene.add(gltfScene.scene);
+  });
+  
+  loader.load("models/jellyfish.glb", function(gltfScene){
+    jellyfish = gltfScene.scene;
+    //gltfScene.translateX(0.01);
+    gltfScene.scene.rotation.x = Math.PI / 2;
+    gltfScene.scene.scale.set(100, 100, 100);
+    gltfScene.scene.position.set(50, 100, -1000);
     const animations = gltfScene.animations;
     mixer = new THREE.AnimationMixer(gltfScene.scene);
     const action = mixer.clipAction(animations[0]);
@@ -173,7 +198,6 @@ function init(){
   const pointLightHelper2 = new THREE.PointLightHelper( niebla_light, sphereSize2 );
   scene.add( pointLightHelper2 );*/
     
-  
 
    //spotlight para montañas
    const spotLight_mountains = new THREE.SpotLight( "#7b6fd2" );
@@ -194,7 +218,7 @@ function init(){
 
 }
 
-/*window.addEventListener(
+window.addEventListener(
   'resize',
   () => {
       camera.aspect = window.innerWidth / window.innerHeight
@@ -209,13 +233,13 @@ function init(){
       render()
   },
   false
-)*/
+)
 
 function animate() {
   requestAnimationFrame(animate);
   moon.rotation.y += 0.005;
 
-  if (mosasa && mixer) {
+  if (mosasa && mixer){
     // Se realiza la traslacion del mosasauro
     const translationSpeed = 2; 
     const translationDistance = 200; 
