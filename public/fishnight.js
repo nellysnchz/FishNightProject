@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from './jsm/controls/OrbitControls.js'
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
 
-let scene, camera, renderer, moon, controls;
+let scene, camera, renderer, moon, controls, mixer, mosasa;
 
 init();
 animate();
@@ -118,6 +118,18 @@ function init(){
     gltfScene.scene.position.set(1000, -500, 1000);
     scene.add(gltfScene.scene);
   });
+
+  loader.load("models/mosasa.glb", function(gltfScene){
+    mosasa = gltfScene.scene;
+    gltfScene.scene.scale.set(50, 50, 50);
+    gltfScene.scene.position.set(100, 400, 500);
+    const animations = gltfScene.animations;
+    mixer = new THREE.AnimationMixer(gltfScene.scene);
+    const action = mixer.clipAction(animations[0]);
+    action.play();
+    scene.add(gltfScene.scene);
+  });
+
   //pointlight para carro
   const light = new THREE.PointLight("#E97451", 5, 700)
   light.position.set(0,-0.10, 500)
@@ -181,9 +193,38 @@ function init(){
   false
 )*/
 
-function animate(){
+function animate() {
   requestAnimationFrame(animate);
   moon.rotation.y += 0.005;
+
+  if (mosasa && mixer) {
+    // Se realiza la traslacion del mosasauro
+    const translationSpeed = 2; 
+    const translationDistance = 200; 
+
+    // Mover a la izquierda
+    mosasa.translateX(-translationSpeed);
+
+    if (mosasa.position.x < -translationDistance) {
+      // Rotar y mover a la derecha
+      const rotationSpeed = 0.01; 
+      const rotationAmount = Math.PI * 2; 
+
+      mosasa.rotation.y += rotationSpeed;
+
+      if (mosasa.rotation.y >= rotationAmount) {
+        // Se mueve a la derecha
+        mosasa.translateX(translationSpeed);
+
+        if (mosasa.position.x > translationDistance) {
+          // Se reinicia la posicion del mosasauro
+          mosasa.position.set(100, 400, 500);
+          mosasa.rotation.set(0, 0, 0);
+        }
+      }
+    }
+    mixer.update(0.02);
+  }
 
   render();
 }
