@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from './jsm/controls/OrbitControls.js'
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
+import { EffectComposer } from './jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from './jsm/postprocessing/RenderPass.js';
+import { GlitchPass } from './jsm/postprocessing/GlitchPass.js';
 
 
 
-
-let scene, camera, renderer, moon, controls, mixer, mosasa;
+let scene, camera, renderer, moon, controls, mixer, mosasa, composer;
 
 
 
@@ -83,10 +85,10 @@ function init(){
   scene.add(skybox);
 
   //luces
-  /*const directionaLight = new THREE.DirectionalLight(0xffffff, 1);
+  const directionaLight = new THREE.DirectionalLight("#C9AAF1", 3);
   directionaLight.position.set(0, 1, 0);
   directionaLight.castShadow = true;
-  scene.add(directionaLight);*/
+  scene.add(directionaLight);
 
   
 
@@ -155,7 +157,7 @@ function init(){
   });
 
   //pointlight para carro
-  const light = new THREE.PointLight("#E97451", 5, 700)
+  const light = new THREE.PointLight("#E97451", 20, 700)
   light.position.set(0,-0.10, 500)
   light.castShadow = true
   light.shadow.camera.near = 500 // default
@@ -167,7 +169,7 @@ function init(){
   
     const spotLight_plano = new THREE.SpotLight( "#49345c" );
     spotLight_plano.position.set( 0,10000,0);
-    spotLight_plano.intensity = 0.5;
+    spotLight_plano.intensity = 0.8;
     spotLight_plano.castShadow = true;
     spotLight_plano.shadow.mapSize.width = 1024;
     spotLight_plano.shadow.mapSize.height = 1024;
@@ -178,10 +180,10 @@ function init(){
     scene.add( spotLightHelper_plano);
 
     //niebla
-    scene.fog = new THREE.Fog( 0x2f3640, 5, 12000 );
+
 
     //pointlight para poste
-  const poste_light = new THREE.PointLight("#047F71", 5, 700)
+  const poste_light = new THREE.PointLight("#047F71", 25, 700)
   poste_light.position.set(950,70, -1500)
   poste_light.intensity = 6
   poste_light.rotateY = -Math.PI / 2
@@ -193,7 +195,7 @@ function init(){
 
 
       //pointlight para poste 2
-  const poste_light2 = new THREE.PointLight("#047F71", 5, 700)
+  const poste_light2 = new THREE.PointLight("#047F71", 25, 700)
   poste_light2.position.set(950,70, 950)
   poste_light2.intensity = 6
   poste_light2.rotateY = -Math.PI / 2
@@ -209,15 +211,22 @@ function init(){
    const spotLight_mountains = new THREE.SpotLight( "#7b6fd2" );
    spotLight_mountains.position.set( -2000,-500,5000);
   
-   spotLight_mountains.intensity = 0.5;
+   spotLight_mountains.intensity = 4;
    spotLight_mountains.castShadow = true;
    spotLight_mountains.shadow.mapSize.width = 10;
    spotLight_mountains.shadow.mapSize.height = 10;
  
    scene.add( spotLight_mountains );
- 
+   composer = new EffectComposer( renderer );
+   const renderPass = new RenderPass( scene, camera );
+  composer.addPass( renderPass );
+
+  const glitchPass = new GlitchPass();
+  composer.addPass( glitchPass );
   
 }
+
+
 
 /*window.addEventListener(
   'resize',
@@ -277,6 +286,6 @@ function animate() {
 }
 
 function render(){
-  renderer.render(scene,camera); 
+  composer.render(scene,camera); 
 }
 
