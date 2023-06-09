@@ -34,7 +34,7 @@ function init(){
 
   var smokeTexture = new THREE.TextureLoader().load('img/smoke.png');
   var smokeGeometry = new THREE.PlaneGeometry(300,1500);
-  var smokeMaterial = new THREE.MeshLambertMaterial({ map: smokeTexture, opacity: 0.3, transparent: true});
+  var smokeMaterial = new THREE.MeshLambertMaterial({ map: smokeTexture, opacity: 0.7, transparent: true});
 
   var smokeParticles;
   smokeParticles = [];
@@ -212,11 +212,7 @@ function init(){
  
    scene.add( spotLight_mountains );
  
-   const spotLightHelper_mountains= new THREE.SpotLightHelper( spotLight_mountains );
-   
-   spotLightHelper_mountains.position.set(10,10,10)
-  
-   scene.add( spotLightHelper_mountains );
+
 
 }
 
