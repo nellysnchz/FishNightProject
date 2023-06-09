@@ -4,6 +4,7 @@ import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
 
 let scene, camera, renderer, moon, controls, mixer, mosasa;
 
+
 init();
 animate();
 
@@ -30,10 +31,8 @@ function init(){
 
   let controls = new OrbitControls(camera, renderer.domElement);
   controls.addEventListener("change", render);
-  controls.minDistance = 500;
-  controls.maxDistance = 2000;
-
-  //Texture loaders
+  
+   //Texture loaders
   const textureLoader = new THREE.TextureLoader();
   const moonTexture = textureLoader.load("img/moontexture.jpg");
   const planeTexture = textureLoader.load("img/mountains_baseColor.jpeg");
