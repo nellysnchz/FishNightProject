@@ -2,7 +2,10 @@ import * as THREE from 'three';
 import { OrbitControls } from './jsm/controls/OrbitControls.js'
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
 
+
+
 let scene, camera, renderer, moon, controls, mixer, mosasa;
+
 
 
 init();
@@ -212,7 +215,11 @@ function init(){
  
    scene.add( spotLight_mountains );
  
-
+   const spotLightHelper_mountains= new THREE.SpotLightHelper( spotLight_mountains );
+   
+   spotLightHelper_mountains.position.set(10,10,10)
+  
+   scene.add( spotLightHelper_mountains );
 
 }
 
@@ -233,8 +240,12 @@ function init(){
   false
 )*/
 
+
+
 function animate() {
   requestAnimationFrame(animate);
+
+
   moon.rotation.y += 0.005;
 
   if (mosasa && mixer) {
@@ -270,5 +281,6 @@ function animate() {
 }
 
 function render(){
-  renderer.render(scene, camera); 
+  renderer.render(scene,camera); 
 }
+
