@@ -8,6 +8,7 @@ init();
 animate();
 
 function init(){
+  window.THREE = THREE;
 
   scene = new THREE.Scene();
 
@@ -144,7 +145,7 @@ function init(){
     //spotlight para iluminar todo el plano
   
     const spotLight_plano = new THREE.SpotLight( "#49345c" );
-    spotLight_plano.position.set( 0,100000,0);
+    spotLight_plano.position.set( 0,10000,0);
     spotLight_plano.intensity = 0.5;
     spotLight_plano.castShadow = true;
     spotLight_plano.shadow.mapSize.width = 1024;
@@ -155,9 +156,26 @@ function init(){
     const spotLightHelper_plano= new THREE.SpotLightHelper( spotLight_plano);
     scene.add( spotLightHelper_plano);
 
+    //niebla
+    scene.fog = new THREE.Fog( 0x2f3640, 0, 12000 );
+
+    //pointlight para niebla
+  /*const niebla_light = new THREE.PointLight("#05057C", 5, 700)
+  niebla_light.position.set(-500,-0.10, -1000)
+  niebla_light.intensity = 50
+  niebla_light.rotateZ = Math.PI / 2
+  niebla_light.castShadow = true
+  niebla_light.shadow.camera.near = 500 // default
+  niebla_light.shadow.camera.far = 500 // default
+  scene.add( niebla_light );
+
+  const sphereSize2 = 500;
+  const pointLightHelper2 = new THREE.PointLightHelper( niebla_light, sphereSize2 );
+  scene.add( pointLightHelper2 );*/
+    
+  
+
    //spotlight para montañas
-
-
    const spotLight_mountains = new THREE.SpotLight( "#7b6fd2" );
    spotLight_mountains.position.set( -2000,-500,5000);
   
