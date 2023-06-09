@@ -184,8 +184,8 @@ function init(){
 
     //pointlight para poste
   const poste_light = new THREE.PointLight("#047F71", 25, 700)
-  poste_light.position.set(950,70, -1500)
-  poste_light.intensity = 6
+  poste_light.position.set(950,-25, -1500)
+  poste_light.intensity = 55
   poste_light.rotateY = -Math.PI / 2
   poste_light.castShadow = true
   poste_light.shadow.camera.near = 500 // default
@@ -196,8 +196,8 @@ function init(){
 
       //pointlight para poste 2
   const poste_light2 = new THREE.PointLight("#047F71", 25, 700)
-  poste_light2.position.set(950,70, 950)
-  poste_light2.intensity = 6
+  poste_light2.position.set(950,-25, 950)
+  poste_light2.intensity = 55
   poste_light2.rotateY = -Math.PI / 2
   poste_light2.castShadow = true
   poste_light2.shadow.camera.near = 500 // default
