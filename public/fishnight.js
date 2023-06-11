@@ -2,7 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from './jsm/controls/OrbitControls.js'
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
 
-let scene, camera, renderer, moon, controls, mixer, mosasa, seaturtle, jellyfish;
+let scene, camera, renderer, moon, controls, mixer, mosasa;
+
+
 
 init();
 animate();
@@ -31,7 +33,7 @@ function init(){
   /*controls = new OrbitControls(camera, renderer.domElement);
   controls.addEventListener("change", render);
   controls.minDistance = 500;
-  controls.maxDistance = 2000;*/
+  controls.maxDistance = 2000;
 
   //Texture loaders
   const textureLoader = new THREE.TextureLoader();
@@ -164,9 +166,7 @@ function init(){
   light.shadow.camera.far = 500 // default
   scene.add( light );
 
-  const sphereSize = 500;
-  const pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
-  scene.add( pointLightHelper );
+ 
     //spotlight para iluminar todo el plano
   
     const spotLight_plano = new THREE.SpotLight( "#49345c" );
@@ -182,21 +182,30 @@ function init(){
     scene.add( spotLightHelper_plano);
 
     //niebla
-    scene.fog = new THREE.Fog( 0x2f3640, 0, 12000 );
+    scene.fog = new THREE.Fog( 0x2f3640, 5, 12000 );
 
-    //pointlight para niebla
-  /*const niebla_light = new THREE.PointLight("#05057C", 5, 700)
-  niebla_light.position.set(-500,-0.10, -1000)
-  niebla_light.intensity = 50
-  niebla_light.rotateZ = Math.PI / 2
-  niebla_light.castShadow = true
-  niebla_light.shadow.camera.near = 500 // default
-  niebla_light.shadow.camera.far = 500 // default
-  scene.add( niebla_light );
+    //pointlight para poste
+  const poste_light = new THREE.PointLight("#047F71", 5, 700)
+  poste_light.position.set(950,70, -1500)
+  poste_light.intensity = 6
+  poste_light.rotateY = -Math.PI / 2
+  poste_light.castShadow = true
+  poste_light.shadow.camera.near = 500 // default
+  poste_light.shadow.camera.far = 500 // default
+  scene.add( poste_light );
 
-  const sphereSize2 = 500;
-  const pointLightHelper2 = new THREE.PointLightHelper( niebla_light, sphereSize2 );
-  scene.add( pointLightHelper2 );*/
+
+
+      //pointlight para poste 2
+  const poste_light2 = new THREE.PointLight("#047F71", 5, 700)
+  poste_light2.position.set(950,70, 950)
+  poste_light2.intensity = 6
+  poste_light2.rotateY = -Math.PI / 2
+  poste_light2.castShadow = true
+  poste_light2.shadow.camera.near = 500 // default
+  poste_light2.shadow.camera.far = 500 // default
+  scene.add( poste_light2 );
+  
     
 
    //spotlight para montañas
@@ -210,12 +219,7 @@ function init(){
  
    scene.add( spotLight_mountains );
  
-   const spotLightHelper_mountains= new THREE.SpotLightHelper( spotLight_mountains );
-   
-   spotLightHelper_mountains.position.set(10,10,10)
   
-   scene.add( spotLightHelper_mountains );
-
 }
 
 window.addEventListener(
@@ -235,8 +239,12 @@ window.addEventListener(
   false
 )
 
+
+
 function animate() {
   requestAnimationFrame(animate);
+
+
   moon.rotation.y += 0.005;
 
   if (mosasa && mixer){
@@ -272,5 +280,6 @@ function animate() {
 }
 
 function render(){
-  renderer.render(scene, camera); 
+  renderer.render(scene,camera); 
 }
+
