@@ -9,9 +9,8 @@ import { GlitchPass } from './jsm/postprocessing/GlitchPass.js';
 Daniela Mocoso
 Nallely Sanchez*/
 
+
 let scene, camera, renderer, moon, controls, mixer, mosasa, composer, seaturtle, jellyfish;
-
-
 
 init();
 animate();
@@ -237,7 +236,8 @@ function init(){
    const spotLight_mountains = new THREE.SpotLight( "#7b6fd2" );
    spotLight_mountains.position.set( -2000,-500,5000);
   
-   spotLight_mountains.intensity = 8;
+
+   spotLight_mountains.intensity = 4;
    spotLight_mountains.castShadow = true;
    spotLight_mountains.shadow.mapSize.width = 10;
    spotLight_mountains.shadow.mapSize.height = 10;
