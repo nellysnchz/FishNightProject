@@ -1,8 +1,15 @@
 import * as THREE from 'three';
 import { OrbitControls } from './jsm/controls/OrbitControls.js'
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js'
+import { EffectComposer } from './jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from './jsm/postprocessing/RenderPass.js';
+import { GlitchPass } from './jsm/postprocessing/GlitchPass.js';
 
-let scene, camera, renderer, moon, controls, mixer, mosasa;
+/* Benjamin Rodriguez
+Daniela Mocoso
+Nallely Sanchez*/
+
+let scene, camera, renderer, moon, controls, mixer, mosasa, composer, seaturtle, jellyfish;
 
 
 
@@ -30,12 +37,30 @@ function init(){
   controls.noPan = true
   controls.noZoom = true
 
-  /*controls = new OrbitControls(camera, renderer.domElement);
-  controls.addEventListener("change", render);
-  controls.minDistance = 500;
-  controls.maxDistance = 2000;
+  /*let controls = new OrbitControls(camera, renderer.domElement);
+  controls.addEventListener("change", render);*/
 
-  //Texture loaders
+  var smokeTexture = new THREE.TextureLoader().load('img/smoke.png');
+  var smokeGeometry = new THREE.PlaneGeometry(300,1500);
+  var smokeMaterial = new THREE.MeshLambertMaterial({ map: smokeTexture, opacity: 0.3, transparent: true});
+
+  var smokeParticles;
+  smokeParticles = [];
+
+  for (var i = 0; i < 5; i++)
+{    
+    var smoke_element = new THREE.Mesh(smokeGeometry,smokeMaterial);
+    smoke_element.scale.set(2, 2, 2);
+    smoke_element.position.set( Math.random()* 100, Math.random()*500, Math.random()*100);
+    smoke_element.rotation.z = Math.random() * 360
+            
+    scene.add(smoke_element);
+    smokeParticles.push(smoke_element);
+}
+
+  
+  
+   //Texture loaders
   const textureLoader = new THREE.TextureLoader();
   const moonTexture = textureLoader.load("img/moontexture.jpg");
   const planeTexture = textureLoader.load("img/mountains_baseColor.jpeg");
@@ -62,10 +87,10 @@ function init(){
   scene.add(skybox);
 
   //luces
-  /*const directionaLight = new THREE.DirectionalLight(0xffffff, 1);
+  const directionaLight = new THREE.DirectionalLight("#C9AAF1", 3);
   directionaLight.position.set(0, 1, 0);
   directionaLight.castShadow = true;
-  scene.add(directionaLight);*/
+  scene.add(directionaLight);
 
   
 
@@ -88,8 +113,7 @@ function init(){
   //GLTF loader
   const loader = new GLTFLoader();
   loader.load("models/mountains.glb", function(gltfScene){
-    //gltfScene.scene.rotation.x = Math.PI * 2;
-    gltfScene.scene.rotation.y = Math.PI * 2;
+    gltfScene.scene.rotation.y = - Math.PI / 2;
     gltfScene.scene.scale.set(100, 300, 100);
     gltfScene.scene.position.set(-500, -500, -5000);
     scene.add(gltfScene.scene);
@@ -119,13 +143,13 @@ function init(){
   loader.load("models/electricity_pole.glb", function(gltfScene){
     gltfScene.scene.rotation.y = - Math.PI / 2;
     gltfScene.scene.scale.set(250, 250, 250);
-    gltfScene.scene.position.set(1000, -800, 1000);
+    gltfScene.scene.position.set(1000, -500, 1000);
     scene.add(gltfScene.scene);
   });
 
   loader.load("models/mosasa.glb", function(gltfScene){
     mosasa = gltfScene.scene;
-    gltfScene.scene.scale.set(80, 80, 80);
+    gltfScene.scene.scale.set(100, 100, 100);
     gltfScene.scene.position.set(100, 400, 500);
     const animations = gltfScene.animations;
     mixer = new THREE.AnimationMixer(gltfScene.scene);
@@ -135,22 +159,22 @@ function init(){
   });
 
   loader.load("models/seaturtle.glb", function(gltfScene){
-    seaturtle = gltfScene.scene;
-    gltfScene.scene.scale.set(800, 800, 800);
-    gltfScene.scene.position.set(-1000, 100, 500);
-    const animations = gltfScene.animations;
-    mixer = new THREE.AnimationMixer(gltfScene.scene);
-    const action = mixer.clipAction(animations[0]);
-    action.play();
-    scene.add(gltfScene.scene);
-  });
-  
+     seaturtle = gltfScene.scene;
+     gltfScene.scene.scale.set(1000, 1000, 1000);
+     gltfScene.scene.position.set(-1000, 10, 500);
+     const animations = gltfScene.animations;
+     mixer = new THREE.AnimationMixer(gltfScene.scene);
+     const action = mixer.clipAction(animations[0]);
+     action.play();
+     scene.add(gltfScene.scene);
+   });
+
   loader.load("models/jellyfish.glb", function(gltfScene){
     jellyfish = gltfScene.scene;
     //gltfScene.translateX(0.01);
-    gltfScene.scene.rotation.x = Math.PI / 2;
-    gltfScene.scene.scale.set(100, 100, 100);
-    gltfScene.scene.position.set(50, 100, -1000);
+    gltfScene.scene.rotation.x = - Math.PI / 2;
+    gltfScene.scene.scale.set(50, 50, 50);
+    gltfScene.scene.position.set(400, 100, 500);
     const animations = gltfScene.animations;
     mixer = new THREE.AnimationMixer(gltfScene.scene);
     const action = mixer.clipAction(animations[0]);
@@ -159,7 +183,7 @@ function init(){
   });
 
   //pointlight para carro
-  const light = new THREE.PointLight("#E97451", 5, 700)
+  const light = new THREE.PointLight("#E97451", 20, 700)
   light.position.set(0,-0.10, 500)
   light.castShadow = true
   light.shadow.camera.near = 500 // default
@@ -171,7 +195,7 @@ function init(){
   
     const spotLight_plano = new THREE.SpotLight( "#49345c" );
     spotLight_plano.position.set( 0,10000,0);
-    spotLight_plano.intensity = 0.5;
+    spotLight_plano.intensity = 0.8;
     spotLight_plano.castShadow = true;
     spotLight_plano.shadow.mapSize.width = 1024;
     spotLight_plano.shadow.mapSize.height = 1024;
@@ -182,12 +206,12 @@ function init(){
     scene.add( spotLightHelper_plano);
 
     //niebla
-    scene.fog = new THREE.Fog( 0x2f3640, 5, 12000 );
+
 
     //pointlight para poste
-  const poste_light = new THREE.PointLight("#047F71", 5, 700)
-  poste_light.position.set(950,70, -1500)
-  poste_light.intensity = 6
+  const poste_light = new THREE.PointLight("#047F71", 25, 700)
+  poste_light.position.set(950,-25, -1500)
+  poste_light.intensity = 55
   poste_light.rotateY = -Math.PI / 2
   poste_light.castShadow = true
   poste_light.shadow.camera.near = 500 // default
@@ -197,9 +221,9 @@ function init(){
 
 
       //pointlight para poste 2
-  const poste_light2 = new THREE.PointLight("#047F71", 5, 700)
-  poste_light2.position.set(950,70, 950)
-  poste_light2.intensity = 6
+  const poste_light2 = new THREE.PointLight("#047F71", 25, 700)
+  poste_light2.position.set(950,-25, 950)
+  poste_light2.intensity = 55
   poste_light2.rotateY = -Math.PI / 2
   poste_light2.castShadow = true
   poste_light2.shadow.camera.near = 500 // default
@@ -207,20 +231,28 @@ function init(){
   scene.add( poste_light2 );
   
     
+  
 
    //spotlight para montañas
    const spotLight_mountains = new THREE.SpotLight( "#7b6fd2" );
    spotLight_mountains.position.set( -2000,-500,5000);
   
-   spotLight_mountains.intensity = 0.5;
+   spotLight_mountains.intensity = 8;
    spotLight_mountains.castShadow = true;
    spotLight_mountains.shadow.mapSize.width = 10;
    spotLight_mountains.shadow.mapSize.height = 10;
  
    scene.add( spotLight_mountains );
- 
+   composer = new EffectComposer( renderer );
+   const renderPass = new RenderPass( scene, camera );
+  composer.addPass( renderPass );
+
+  const glitchPass = new GlitchPass();
+  composer.addPass( glitchPass );
   
 }
+
+
 
 window.addEventListener(
   'resize',
@@ -239,15 +271,13 @@ window.addEventListener(
   false
 )
 
-
-
 function animate() {
   requestAnimationFrame(animate);
 
 
   moon.rotation.y += 0.005;
 
-  if (mosasa && mixer){
+  if (mosasa && mixer) {
     // Se realiza la traslacion del mosasauro
     const translationSpeed = 2; 
     const translationDistance = 200; 
@@ -280,6 +310,5 @@ function animate() {
 }
 
 function render(){
-  renderer.render(scene,camera); 
+  composer.render(scene,camera); 
 }
-
